@@ -50,7 +50,7 @@ function post(data, callback, err) {
   req.end();
 }
 
-if (fs.existsSync('./latest.json')) var stores = require('./latest.json');
+if (fs.existsSync('./public/latest.json')) var stores = require('./public/latest.json');
 else var stores = require('./stores.json');
 
 function post_data(store) {
@@ -67,7 +67,7 @@ function post_data(store) {
 }
 
 function export2file(){
-  fs.writeFile('./latest.json', JSON.stringify(stores, null, 2), (err) => {
+  fs.writeFile('./public/latest.json', JSON.stringify(stores, null, 2), (err) => {
     if (err) throw err;
   });
 }
@@ -105,7 +105,7 @@ function check_store(store) {
     check_store(stores[i]);
     if (!i--) i = stores.length - 1;
     iterate_stores(i);
-  }, 2000);
+  }, 1000);
 })(stores.length - 1);
 
 
