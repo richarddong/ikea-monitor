@@ -24,26 +24,26 @@
       span.status.Closed {
         color: #ffc107;
       }
-      span.status.Unavailable {
+      span.status.Unknown {
         color: rgba(0,0,0,.5);
       }
     </style>
 
-    <title>IKEA Click & Collect Status</title>
-    <script data-name="BMC-Widget" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="dongst" data-description="Support me, please!" data-message="Thank you for visiting. You can now buy me a coffee and leave a comment!" data-color="#FF813F" data-position="right" data-x_margin="18" data-y_margin="18"></script>
+    <title>IKEA Click & Collect Availability</title>
+    <script data-name="BMC-Widget" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="dongst" data-description="Support me, please!" data-message="Thank you for visiting. You can now buy me a coffee!" data-color="#FF813F" data-position="right" data-x_margin="18" data-y_margin="18"></script>
   </head>
   <body>
-    <div class="container text-center mt-5 mb-2 p-5"><h1 class="d-inline-block">IKEA Click & Collect Status</h1></div>
+    <div class="container text-center mt-5 mb-2 p-5"><h1 class="d-inline-block">IKEA Click & Collect Availability</h1></div>
     <div class="container mb-5 pb-5">
       <div class="sharethis-inline-share-buttons"></div>
     </div>
     <div class="container my-5 text-center">
-      <p>Only stores in the United States included. </p>
+      <p>Only stores currently providing Click & Collect service in the United States are included. </p>
     </div>
     <div class="container my-5 text-center legend">
       <span class="badge badge-light"><span class="status Open">●</span> Open</span>&nbsp;
       <span class="badge badge-light"><span class="status Closed">●</span> Closed</span>&nbsp;
-      <span class="badge badge-light"><span class="status Unavailable">●</span> Unavailable</span>
+      <span class="badge badge-light"><span class="status Unknown">●</span> Unknown</span>
     </div>
     <div class="container px-5">
       <div class="row">
@@ -154,7 +154,7 @@
           let status;
           if (store.last_open && store.last_open > store.last_closed) status = "Open";
           else if (store.last_closed) status = "Closed";
-          else status = "Unavailable";
+          else status = "Unknown";
           $(`div.${store.state} ul`).append(`<li>${store.name}&nbsp;&nbsp;<span class="status ${status}">●</span></li>`);
         }
       });
