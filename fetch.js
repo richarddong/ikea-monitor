@@ -190,11 +190,11 @@ function update(store, status) {
 }
 
 fs.watch('./data/us-stores-list.json', (eventType, filename) => {
-  if (eventType == 'change') load_stores_list('us');
+  if (eventType == 'change') setTimeout(load_stores_list, 1000, 'us');
 });
 
 fs.watch('./data/ca-stores-list.json', (eventType, filename) => {
-  if (eventType == 'change') load_stores_list('ca');
+  if (eventType == 'change') setTimeout(load_stores_list, 1000, 'ca');
 });
 
 // ========================================
