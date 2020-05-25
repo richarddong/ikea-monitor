@@ -1,57 +1,9 @@
 const https = require('https');
-const querystring = require('querystring');
 const fs = require('fs');
 const crypto = require('crypto');
+const util = require('util');
 
-function post(data, callback, err) {
-  let options = {
-    hostname: 'ww8.ikea.com',
-    path: '/clickandcollect/us/receive/',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  };
-
-  let req = https.request(options, (res) => {
-    const { statusCode } = res;
-    const contentType = res.headers['content-type'];
-
-    let error;
-    if (statusCode !== 200) {
-      error = new Error('Request Failed.\n' +
-                        `Status Code: ${statusCode}`);
-    } else if (!/^application\/json/.test(contentType)) {
-      error = new Error('Invalid content-type.\n' +
-                        `Expected application/json but received ${contentType}`);
-    }
-    if (error) {
-      err(error);
-      // Consume response data to free up memory
-      res.resume();
-      return;
-    }
-
-    res.setEncoding('utf8');
-    let rawData = '';
-    res.on('data', (chunk) => { rawData += chunk; });
-    res.on('end', () => {
-      try {
-        const parsedData = JSON.parse(rawData);
-        callback(parsedData);
-      } catch (e) {
-        err(e.message);
-      }
-    });
-  }).on('error', err);
-
-  req.write(data);
-
-  req.end();
-}
-
-if (fs.existsSync('./public/latest.json')) var stores = require('./public/latest.json');
-else var stores = require('./stores.json');
+// ========================================
 
 function post_data(store) {
   const payload = `{"selectedService":"fetchlocation",\
@@ -66,46 +18,160 @@ function post_data(store) {
   return "payload=" + payload + "&hmac=" + hash;
 }
 
-function export2file(){
-  fs.writeFile('./public/latest.json', JSON.stringify(stores, null, 2), (err) => {
+function post4json(url, data, cb, e) {
+  const options = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  };
+
+  let req = https.request(url, options, (res) => {
+    const { statusCode } = res;
+    const contentType = res.headers['content-type'];
+
+    let error;
+    if (statusCode !== 200) {
+      error = new Error('Request Failed.\n' +
+                        `Status Code: ${statusCode}`);
+    } else if (!/^application\/json/.test(contentType)) {
+      error = new Error('Invalid content-type.\n' +
+                        `Expected application/json but received ${contentType}`);
+    }
+    if (error) {
+      e(error);
+      // Consume response data to free up memory
+      res.resume();
+      return;
+    }
+
+    res.setEncoding('utf8');
+    let rawData = '';
+    res.on('data', (chunk) => { rawData += chunk; });
+    res.on('end', () => {
+      try {
+        const parsedData = JSON.parse(rawData);
+        cb(parsedData);
+      } catch (error) {
+        e(error);
+      }
+    });
+  }).on('error', e);
+
+  req.write(data);
+
+  req.end();
+}
+
+function read_json(json) {
+  const legit_closed_1 =  {
+                            status: "ERROR",
+                            message: "The commission capacity of this store is exhausted for today",
+                            code: 1470143968
+                          };
+  const legit_closed_2 =  {
+                            status: 'ERROR',
+                            message: 'Store has no available commissions',
+                            code: 1410693100
+                          };
+  const legit_closed_3 =  {
+                            status: "ERROR",
+                            message: "Tried 100 without success. Probably you have no handover or collection capacity set. Store in Charge: ",
+                            code: 0
+                          };
+  const legit_open_1 = {};
+
+  if (util.isDeepStrictEqual(json, legit_closed_1)) return "closed";
+  if (util.isDeepStrictEqual(json, legit_closed_2)) return "closed";
+  if (json.status == legit_closed_3.status
+      && json.message.startsWith(legit_closed_3.message)
+      && json.code == legit_closed_3.code) return "closed";
+  if (json.status == "OK") return "open";
+
+  return false;
+}
+
+function check_store(store, cb, e) {
+  const url = 'https://ww8.ikea.com/clickandcollect/us/receive/';
+  const data = post_data(store);
+  post4json(url, data, (json) => {
+    const store_status = read_json(json);
+    if (store_status) cb(store_status);
+    else e(new Error(`Illegitimate JSON for ${store.name}`));
+
+  }, e);
+}
+
+// ========================================
+
+// const test_stores = require('./data/us-stores-list.json');
+
+// (function iter(i) {
+//   const test_store = test_stores[i];
+//   check_store(test_store, (store_status) => {
+//     console.log(`${new Date().toISOString()} | ${store_status.toUpperCase()}: ${test_store.name}, ${test_store.state}`);
+//   }, (error) => {
+//     console.error(`${new Date().toISOString()} | ${error.message}`);
+//   });
+//   if (++i == test_stores.length) return;
+//   setTimeout(iter, 1000, i);
+// })(0);
+
+// ========================================
+
+if (fs.existsSync('./public/latest.json')) var latest = require('./public/latest.json');
+else {
+  var latest = [];
+  load_us_stores_list();
+}
+
+function load_us_stores_list() {
+  fs.readFile('./data/us-stores-list.json', 'utf8', (err, string) => {
+    if (err) throw err;
+    let us_stores = JSON.parse(string);
+    for (const us_store of us_stores) {
+      if (!latest.find(store => store.id == us_store.id)) {
+        us_store.last_open = "";
+        us_store.last_closed = "";
+        latest.push(us_store);
+      }
+    }
+    latest.sort((a, b) => { if (a.name < b.name) return -1; });
+    latest.sort((a, b) => { if (a.state < b.state) return -1; });
+    console.log(new Date().toISOString() + " | U.S. stores loaded: " + us_stores.length + " stores");
+    output();
+  });
+}
+
+function output() {
+
+  fs.writeFile('./public/latest.json', JSON.stringify(latest, null, 2), (err) => {
     if (err) throw err;
   });
 }
 
-function log_result(store, result) {
-  let now = new Date();
-  switch (result) {
-    case 'OPEN':
-      store.last_open = now;
-      break;
-    case 'CLOSED':
-      store.last_closed = now;
-      break;
-  }
-  export2file();
-  return console.log(`${new Date().toISOString()} | ${result}: IKEA ${store.name}, ${store.state}`);
+function update(store, status) {
+  const now = new Date();
+  // const store = latest[latest.findIndex(store => store.id == id)];
+
+  if (status == 'open') store.last_open = now;
+  else if (status == 'closed') store.last_closed = now;
+
+  console.log(`${new Date().toISOString()} | ${status.toUpperCase()}: ${store.name}, ${store.state}`);
+  output();
 }
 
-function check_store(store) {
-  let data = post_data(store);
-  post(data, (result) => {
-    if (result.status == 'ERROR') log_result(store, 'CLOSED');
-    else if (result.status == 'OK') log_result(store, 'OPEN');
-    else log_result(store, 'ERROR');
-    // setTimeout(check_store, 1000, store);
-  }, (error) => {
-    console.error(`${new Date().toISOString()} | ERROR: Failed to fetch ${store.name}, ${store.state}. ${error.message}`);
-    // setTimeout(check_store, 1000, store);
-  });
+fs.watch('./data/us-stores-list.json', (eventType, filename) => {
+  if (eventType == 'change') load_us_stores_list();
+});
 
-}
+// ========================================
 
 (function iterate_stores(i) {
-  setTimeout(() => {
-    check_store(stores[i]);
-    if (!i--) i = stores.length - 1;
-    iterate_stores(i);
-  }, 1000);
-})(stores.length - 1);
-
-
+  const store = latest[i];
+  if (store) check_store(store, (status) => {
+    update(store, status);
+  }, (error) => {
+    console.error(`${new Date().toISOString()} | ${error.message}`);
+  });
+  if (++i > latest.length) i = 0;
+  setTimeout(iterate_stores, 1000, i);
+})(0);
