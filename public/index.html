@@ -42,12 +42,20 @@
       <p>Canada, E-mail notification, and other features are under development. Please provide feedback <a target="_blank" href="https://www.reddit.com/r/IKEA/comments/gpl3x0/ikea_click_collect_status_website/">here</a>.</p>
       <p class="small"><a target="_blank" href="https://www.ikea.com/us/en/customer-service/services/product-reservation/">Click & Collect</a> is the online order + curbside pick-up service provided by IKEA. Latest <a target="_blank" href="https://www.ikea.com/us/en/customer-service/faq/">updates</a> to their services in the U.S. during Covid-19.</p>
     </div>
-    <div class="container my-5 text-center legend">
+    <div class="container my-5 pb-3 pt-1 text-center legend">
       <span class="badge badge-light"><span class="status Open">●</span> Open for new order</span><br>
       <span class="badge badge-light"><span class="status Closed">●</span> Closed for new order</span><br>
       <span class="badge badge-light"><span class="status Unknown">●</span> Unknown</span>
     </div>
     <div class="container px-5 us-states">
+      <hr>
+      <h5 class="text-center py-3">United States</h5>
+      <div class="row">
+      </div>
+    </div>
+    <div class="container px-5 pt-3 pb-5 ca-states">
+      <hr>
+      <h5 class="text-center py-3">Canada</h5>
       <div class="row">
       </div>
     </div>
@@ -68,7 +76,7 @@
           if (store.last_open && store.last_open > store.last_closed) status = "Open";
           else if (store.last_closed) status = "Closed";
           else status = "Unknown";
-          if ($(`div.${store.state}`).length == 0) $('div.us-states div.row').append(`<div class="${store.state} col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 mb-3 text-center"><p><h6>${store.state}</h6><ul class="list-unstyled"></ul></div>`);
+          if ($(`div.${store.state}`).length == 0) $(`div.${store.country}-states div.row`).append(`<div class="${store.state} col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 my-2 text-center"><p><h6>${store.state}</h6><ul class="list-unstyled"></ul></div>`);
           $(`div.${store.state} ul`).append(`<li>${store.name}&nbsp;&nbsp;<span class="status ${status}">●</span></li>`);
         }
       });

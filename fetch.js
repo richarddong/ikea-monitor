@@ -6,12 +6,26 @@ const util = require('util');
 // ========================================
 
 function post_data(store) {
-  const payload = `{"selectedService":"fetchlocation",\
+  let payload;
+  switch (store.country) {
+    case 'us':
+      payload = `{"selectedService":"fetchlocation",\
 "customerView":"desktop",\
 "locale":"en_US",\
 "selectedServiceValue":"${store.id}",\
 "slId":"1241241241",\
 "articles":[{"articleNo":"20011408","count":1}]}`;
+      break;
+    case 'ca':
+      payload = `{"selectedService":"fetchlocation",\
+"customerView":"desktop",\
+"locale":"en_CA",\
+"selectedServiceValue":"${store.id}",\
+"slId":"1241241241",\
+"articles":[{"articleNo":"30449908","count":1}]}`;
+      break;
+  }
+
   const hash = crypto.createHmac('sha1', 'G6XxMY7n')
                      .update(payload)
                      .digest('hex');
@@ -77,6 +91,11 @@ function read_json(json) {
                             message: "Tried 100 without success. Probably you have no handover or collection capacity set. Store in Charge: ",
                             code: 0
                           };
+  const legit_closed_4 =  {
+                            status: 'ERROR',
+                            message: 'No common capacity in configured time window',
+                            code: 1472475118
+                          }
   const legit_open_1 = {};
 
   if (util.isDeepStrictEqual(json, legit_closed_1)) return "closed";
@@ -84,30 +103,43 @@ function read_json(json) {
   if (json.status == legit_closed_3.status
       && json.message.startsWith(legit_closed_3.message)
       && json.code == legit_closed_3.code) return "closed";
+  if (util.isDeepStrictEqual(json, legit_closed_4)) return "closed";
   if (json.status == "OK") return "open";
 
   return false;
 }
 
 function check_store(store, cb, e) {
-  const url = 'https://ww8.ikea.com/clickandcollect/us/receive/';
+  const url = `https://ww8.ikea.com/clickandcollect/${store.country}/receive/`;
   const data = post_data(store);
   post4json(url, data, (json) => {
     const store_status = read_json(json);
     if (store_status) cb(store_status);
-    else e(new Error(`Illegitimate JSON for ${store.name}`));
-
+    else {
+      console.error(data);
+      console.error(json);
+      e(new Error(`Illegitimate JSON for ${store.name}`));
+    }
   }, e);
 }
 
 // ========================================
 
-// const test_stores = require('./data/us-stores-list.json');
+// const test_stores = require('./data/ca-stores-list.json');
+
+// const test_store = test_stores[0];
+
+// check_store(test_store, (store_status) => {
+//   console.log(`${new Date().toISOString()} | ${store_status.toUpperCase()}: ${test_store.name}, ${test_store.country}`);
+// }, (error) => {
+//   console.error(`${new Date().toISOString()} | ${error.message}`);
+// });
+
 
 // (function iter(i) {
 //   const test_store = test_stores[i];
 //   check_store(test_store, (store_status) => {
-//     console.log(`${new Date().toISOString()} | ${store_status.toUpperCase()}: ${test_store.name}, ${test_store.state}`);
+//     console.log(`${new Date().toISOString()} | ${store_status.toUpperCase()}: ${test_store.name}, ${test_store.country}`);
 //   }, (error) => {
 //     console.error(`${new Date().toISOString()} | ${error.message}`);
 //   });
@@ -120,29 +152,30 @@ function check_store(store, cb, e) {
 if (fs.existsSync('./public/latest.json')) var latest = require('./public/latest.json');
 else {
   var latest = [];
-  load_us_stores_list();
+  load_stores_list('us');
+  load_stores_list('ca');
 }
 
-function load_us_stores_list() {
-  fs.readFile('./data/us-stores-list.json', 'utf8', (err, string) => {
+function load_stores_list(country) {
+  fs.readFile(`./data/${country}-stores-list.json`, 'utf8', (err, string) => {
     if (err) throw err;
-    let us_stores = JSON.parse(string);
-    for (const us_store of us_stores) {
-      if (!latest.find(store => store.id == us_store.id)) {
-        us_store.last_open = "";
-        us_store.last_closed = "";
-        latest.push(us_store);
+    let stores = JSON.parse(string);
+    for (const store of stores) {
+      if (!latest.find(s => s.id == store.id)) {
+        store.last_open = "";
+        store.last_closed = "";
+        latest.push(store);
       }
     }
     latest.sort((a, b) => { if (a.name < b.name) return -1; });
     latest.sort((a, b) => { if (a.state < b.state) return -1; });
-    console.log(new Date().toISOString() + " | U.S. stores loaded: " + us_stores.length + " stores");
+    latest.sort((a, b) => { if (a.country < b.country) return -1; });
+    console.log(`${new Date().toISOString()} | ${country} stores loaded: ${stores.length} stores`);
     output();
   });
 }
 
 function output() {
-
   fs.writeFile('./public/latest.json', JSON.stringify(latest, null, 2), (err) => {
     if (err) throw err;
   });
@@ -150,17 +183,20 @@ function output() {
 
 function update(store, status) {
   const now = new Date();
-  // const store = latest[latest.findIndex(store => store.id == id)];
 
   if (status == 'open') store.last_open = now;
   else if (status == 'closed') store.last_closed = now;
 
-  console.log(`${new Date().toISOString()} | ${status.toUpperCase()}: ${store.name}, ${store.state}`);
+  console.log(`${new Date().toISOString()} | ${status.toUpperCase()}: ${store.name}, ${store.state}, ${store.country}`);
   output();
 }
 
 fs.watch('./data/us-stores-list.json', (eventType, filename) => {
-  if (eventType == 'change') load_us_stores_list();
+  if (eventType == 'change') load_stores_list('us');
+});
+
+fs.watch('./data/ca-stores-list.json', (eventType, filename) => {
+  if (eventType == 'change') load_stores_list('ca');
 });
 
 // ========================================
