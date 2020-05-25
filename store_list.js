@@ -91,7 +91,7 @@ function get_ca_stores(cb) {
     } else {
       console.log(new Date().toISOString() + " | " + stores.length + " stores in the U.S.");
     }
-    setTimeout(watch_us_stores, 1000, stores);
+    setTimeout(watch_us_stores, 10000, stores);
   });
 })();
 
