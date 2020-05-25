@@ -3,7 +3,10 @@ var http = require('http')
 var serveStatic = require('serve-static')
 
 // Serve up public/ftp folder
-var serve = serveStatic('public', { 'index': ['index.html', 'index.htm'] })
+var serve = serveStatic('public', {
+  'index': ['index.html', 'index.htm'],
+  'maxAge': '1m'
+});
 
 // Create server
 var server = http.createServer(function onRequest (req, res) {
@@ -12,15 +15,3 @@ var server = http.createServer(function onRequest (req, res) {
 
 // Listen
 server.listen(80)
-
-
-// var static = require('node-static');
-
-// var file = new static.Server('./public', {cache: 30});
-
-// require('http').createServer(function (request, response) {
-//   request.addListener('end', function () {
-//     file.serve(request, response);
-//   }).resume();
-// }).listen(80);
-
