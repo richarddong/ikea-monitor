@@ -95,9 +95,7 @@ function read_json(json) {
                             status: 'ERROR',
                             message: 'No common capacity in configured time window',
                             code: 1472475118
-                          }
-  const legit_open_1 = {};
-
+                          };
   if (util.isDeepStrictEqual(json, legit_closed_1)) return "closed";
   if (util.isDeepStrictEqual(json, legit_closed_2)) return "closed";
   if (json.status == legit_closed_3.status

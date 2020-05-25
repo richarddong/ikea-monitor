@@ -103,7 +103,7 @@ function get_ca_stores(cb) {
     } else {
       console.log(new Date().toISOString() + " | " + stores.length + " stores in Canada");
     }
-    setTimeout(watch_ca_stores, 1000, stores);
+    setTimeout(watch_ca_stores, 10000, stores);
   });
 })();
 
