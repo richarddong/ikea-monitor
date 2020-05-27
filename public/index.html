@@ -27,6 +27,9 @@
       span.status.Unknown {
         color: rgba(0,0,0,.5);
       }
+      sup small {
+        font-size: 0.8rem;
+      }
     </style>
 
     <title>IKEA Click & Collect Availability</title>
@@ -35,7 +38,7 @@
   <body>
     <nav class="navbar bg-light">
       <span class="navbar-text m-auto text-center">
-        <a target="_blank" href="https://cdn.forms-content.sg-form.com/309c87b8-9ee9-11ea-9bc4-1adbad87d676">Get updates</a> when email/text notification, availability history, auto page refresh and other features are ready. <a target="_blank" href="https://www.reddit.com/r/IKEA/comments/gpl3x0/ikea_click_collect_status_website/">Feedback</a><hr><mark>May 25, 2020: Now supports Canada!</mark>
+        <a target="_blank" href="https://cdn.forms-content.sg-form.com/309c87b8-9ee9-11ea-9bc4-1adbad87d676">Get updates</a> when email/text notification, availability history, auto page refresh and other features are ready. <a target="_blank" href="https://www.reddit.com/r/IKEA/comments/gpl3x0/ikea_click_collect_status_website/">Feedback</a><hr><mark>May 26, 2020: <a href="#subscribe-container">Email Notification<sup>beta</sup></a>!</mark>
       </span>
     </nav>
     <div class="container text-center mt-5 mb-2 p-5">
@@ -67,9 +70,9 @@
       </div>
       <p class="small text-center mt-4">More locations in Canada will appear as soon as Click & Collect service becomes operative.</p>
     </div>
-    <div class="container px-5 mt-5 subscribe">
+    <div class="container px-5 mt-5 subscribe" id="subscribe-container">
       <hr>
-      <h2 class="text-center pt-4 pb-3">Subscribe</h2>
+      <h2 class="text-center pt-4 pb-3">Subscribe<sup><small>beta</small></sup></h2>
       <p class="text-center my-4">An email will be sent to you when  locations are open for new Click & Collect order. </p>
       <div class="row pt-4 justify-content-center text-center">
         <div>
@@ -116,13 +119,21 @@
         $('#subscribe-button').click(function() {
           let email = $('#subscribe-email-address').val();
           let locations = $('.subscribe-checkbox:checked').map(function () {return this.id}).get();
+          if (locations.length == 0) {
+            window.alert('Check the boxes above to select locations before clicking "Subscribe".');
+            return;
+          }
           $.post( "subscribe", { email: email, store_names: locations },  function () {
+            $('#subscribe-button').text('Subscribed');
+            $('#subscribe-button').prop('disabled', true);
             console.log('Successfully subscribed.');
           });
         });
         $('#unsubscribe-all-button').click(function() {
           let email = $('#subscribe-email-address').val();
           $.post( "unsubscribe_all", { email: email },  function () {
+            $('#unsubscribe-all-button').text('Unsubscribed');
+            $('#unsubscribe-all-button').prop('disabled', true);
             console.log('Successfully unsubscribed all.');
           });
         });

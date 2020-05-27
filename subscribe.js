@@ -53,7 +53,14 @@ function notify(store_to_notify) {
 function check_and_notify(){
   console.log('Checking');
   let changed = false;
-  const latest = JSON.parse(fs.readFileSync('./public/latest.json'));
+  const latest_raw = fs.readFileSync('./public/latest.json');
+  var latest;
+  try {
+    latest = JSON.parse(latest_raw);
+  } catch (e) {
+    console.error(e);
+    console.debug(latest_raw);
+  }
   for (store of latest) {
     var store_to_notify = stores_to_notify.find(store_to_notify => store_to_notify.name == store.name);
 
@@ -83,7 +90,7 @@ function check_and_notify(){
 }
 
 fs.watch('./public/latest.json', (eventType, filename) => {
-  if (eventType == 'change') check_and_notify();
+  if (eventType == 'change') setTimeout(check_and_notify, 200);
 });
 
 exports.subscribe = subscribe;
