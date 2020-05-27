@@ -60,6 +60,7 @@ function check_and_notify(){
   } catch (e) {
     console.error(e);
     console.debug(latest_raw);
+    return;
   }
   for (store of latest) {
     var store_to_notify = stores_to_notify.find(store_to_notify => store_to_notify.name == store.name);

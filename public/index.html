@@ -30,6 +30,24 @@
       sup small {
         font-size: 0.8rem;
       }
+      .subscribe-checkbox {
+        border-width: 0.5px;
+      }
+      .subscribe-checkbox:checked {
+        background-color: white;
+      }
+      .location-name {
+        margin-left: 4px;
+      }
+      #subscribe-email-address {
+        text-align: center;
+      }
+      #story h5 {
+        text-align: center;
+      }
+      #story p {
+        text-indent: 2em;
+      }
     </style>
 
     <title>IKEA Click & Collect Availability</title>
@@ -38,7 +56,7 @@
   <body>
     <nav class="navbar bg-light">
       <span class="navbar-text m-auto text-center">
-        <a target="_blank" href="https://cdn.forms-content.sg-form.com/309c87b8-9ee9-11ea-9bc4-1adbad87d676">Get updates</a> when email/text notification, availability history, auto page refresh and other features are ready. <a target="_blank" href="https://www.reddit.com/r/IKEA/comments/gpl3x0/ikea_click_collect_status_website/">Feedback</a><hr><mark>May 26, 2020: <a href="#subscribe-container">Email Notification<sup>beta</sup></a>!</mark>
+        <a target="_blank" href="https://cdn.forms-content.sg-form.com/309c87b8-9ee9-11ea-9bc4-1adbad87d676">Get updates</a> when text message notification, availability history, auto page refresh and other features are ready. <a target="_blank" href="https://www.reddit.com/r/IKEA/comments/gpl3x0/ikea_click_collect_status_website/">Feedback</a><hr><mark>May 27, 2020: <a href="#subscribe-container">Email Notification<sup>beta</sup></a>!</mark>
       </span>
     </nav>
     <div class="container text-center mt-5 mb-2 p-5">
@@ -90,7 +108,32 @@
       <div class="row pt-2 pb-4 justify-content-center">
         <button type="button" class="btn btn-link" id="unsubscribe-all-button">Unsubscribe all</button>
       </div>
-
+    </div>
+    <div class="container mt-3 story" id="story">
+      <div class="row justify-content-center ">
+        <div style="background-color: #f5f3f0;" class="col-10 col-sm-10 col-md-8 col-lg-6 col-xl-6 border rounded p-4">
+          <h5 class="p-2">The Story</h5>
+          <p style="text-align: center;text-indent: 0;"><small>May 27, 2020</small></p>
+          <p>
+            After a week of trying to order a watering can for my patio herbs from IKEA, by the time I was going to give up, an idea crossed my mind—what about writing some code to get my order through? It was intimidating because I haven't been coding for years, besides the fact that I was just a self-taught developer in the first place. Luckily, my wife supported me, and I decided to do it.
+          </p>
+          <p>
+            On the first day of coding, I spotted a slot and got my order placed, but I didn't want to stop. This is fun! And I want more! Why not make a website to help others like me? Surprisingly, the more I write, the easier it gets, as if the passion for creating beautiful apps has never left me.
+          </p>
+          <p>
+            Three days ago, the first public version of the website went online. I posted a link on reddit in the hope of attracting ideally dozens of users. However, things went well beyond what I expected. So far, ten thousand people have visited my website, doubling every day. People from Canada asked for support. Developers offered free server and code contribution. And most importantly, people are finally getting the desk for their daughter, patio set for their birthday and crib for their baby. I feel so honored to be part of this.
+          </p>
+          <p>
+            I'd like to continue my website free of charge without ads, develop text notification and other features in the future. Please support me! For you guys who already bought me coffees, thank you!
+          </p>
+          <div class="pt-4 pb-2 d-block mx-auto text-center">
+            <style>.bmc-button img{height: 34px !important;width: 35px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{padding: 7px 15px 7px 10px !important;line-height: 35px !important;height:51px !important;text-decoration: none !important;display:inline-flex !important;color:#FFFFFF !important;background-color:#FF813F !important;border-radius: 5px !important;border: 1px solid transparent !important;padding: 7px 15px 7px 10px !important;font-size: 22px !important;letter-spacing: 0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#FFFFFF !important;}</style><link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/dongst"><img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:5px;font-size:28px !important;">Buy me a coffee</span></a>
+          </div>
+          <div class="pt-3 pb-2">
+            <div style="width:117px;" class="mx-auto gfm-embed" data-url="https://www.gofundme.com/f/ikea-click-amp-collect-availability-website/widget/small"></div><script defer src="https://www.gofundme.com/static/js/embed.js"></script>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="container p-5 mt-5 mb-5 text-center">
       <p class="small text-muted font-weight-light">This is not an IKEA website. IKEA® is a registered trademark of Inter-IKEA Systems B.V. in the U.S. and other countries.</p>
@@ -109,9 +152,10 @@
           else if (store.last_closed) status = "Closed";
           else status = "Unknown";
           if ($(`div.${store.state}`).length == 0) $(`div.${store.country}-states div.row`).append(`<div class="${store.state} col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 my-2 text-center"><p><h6>${store.state}</h6><ul class="list-unstyled"></ul></div>`);
-          $(`div.${store.state} ul`).append(`<li><input type="checkbox" class="form-check-input subscribe-checkbox" id="${store.name}"><label class="form-check-label" for="${store.name}">${store.name}&nbsp;&nbsp;<span class="status ${status}">●</span></label></li>`);
+          $(`div.${store.state} ul`).append(`<li><input type="checkbox" class="form-check-input subscribe-checkbox" id="${store.name}"><label class="form-check-label location-name" for="${store.name}">${store.name}&nbsp;&nbsp;<span class="status ${status}">●</span></label></li>`);
         }
         $('.subscribe-checkbox').change(function () {
+            $(this).next().toggleClass('font-weight-bold');
             let locations = $('.subscribe-checkbox:checked').map(function () {return this.id});
             if (locations.length == 0) $('#subscribe-count').text('Check the boxes above to select locations before clicking "Subscribe".');
             else $('#subscribe-count').text(`You are about to subscribe to email notification for IKEA ${locations.get().join(', ')}.`);
@@ -123,6 +167,10 @@
             window.alert('Check the boxes above to select locations before clicking "Subscribe".');
             return;
           }
+          if (email.length == 0) {
+            window.alert('Please input your email address.');
+            return;
+          }
           $.post( "subscribe", { email: email, store_names: locations },  function () {
             $('#subscribe-button').text('Subscribed');
             $('#subscribe-button').prop('disabled', true);
@@ -131,6 +179,10 @@
         });
         $('#unsubscribe-all-button').click(function() {
           let email = $('#subscribe-email-address').val();
+          if (email.length == 0) {
+            window.alert('Please input your email address.');
+            return;
+          }
           $.post( "unsubscribe_all", { email: email },  function () {
             $('#unsubscribe-all-button').text('Unsubscribed');
             $('#unsubscribe-all-button').prop('disabled', true);
