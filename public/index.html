@@ -67,6 +67,13 @@
       </div>
       <p class="small text-center mt-4">More locations in Canada will appear as soon as Click & Collect service becomes operative.</p>
     </div>
+    <div class="container px-5 historical_store">
+      <hr>
+      <h5 class="text-center py-3" id="historical_header">Historical</h5>
+      <div class="row" id="historical_store">
+        <div id="order_id"></div>
+      </div>
+    </div>    
     <div class="container p-5 mb-5 text-center">
       <p class="small text-black-50 font-weight-light">This is not an IKEA website. IKEA® is a registered trademark of Inter-IKEA Systems B.V. in the U.S. and other countries.</p>
     </div>
@@ -77,6 +84,14 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=5ec9fe6535f3dd0012878f08&product=inline-share-buttons&cms=website' async='async'></script>
     <script type="text/javascript">
+      
+      var getQueryString = function ( field, url ) {
+        var href = url ? url : window.location.href;
+        var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
+        var string = reg.exec(href);
+        return string ? string[1] : null;
+      };
+
       $.get("latest.json", function (latest) {
         console.log(latest);
         for (const store of latest) {
@@ -85,8 +100,28 @@
           else if (store.last_closed) status = "Closed";
           else status = "Unknown";
           if ($(`div.${store.state}`).length == 0) $(`div.${store.country}-states div.row`).append(`<div class="${store.state} col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 my-2 text-center"><p><h6>${store.state}</h6><ul class="list-unstyled"></ul></div>`);
-          $(`div.${store.state} ul`).append(`<li>${store.name}&nbsp;&nbsp;<span class="status ${status}">●</span></li>`);
+          $(`div.${store.state} ul`).append(`<li><a href="/?id=${store.id}">${store.name}&nbsp;&nbsp;<span class="status ${status}">●</span></a></li>`);
         }
+        
+        var chosen_store = getQueryString('id');
+
+        if (chosen_store){
+          var historical = latest.filter(function(item){
+            return item.id == chosen_store;         
+        });
+        console.log(chosen_store)
+        console.log(historical)
+        var elem = historical[0]['last_open_historical'];
+        console.log(elem)
+
+        for (const history of elem) {
+          $(`div.historical_store div.row`).append(`<div class="testing col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 my-2 text-center"><p><h6>${history}</h6><ul class="list-unstyled"></ul></div>`);
+
+        }
+        
+        }
+
+
       });
     </script>
   </body>
