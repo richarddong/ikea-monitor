@@ -160,8 +160,9 @@ function load_stores_list(country) {
     let stores = JSON.parse(string);
     for (const store of stores) {
       if (!latest.find(s => s.id == store.id)) {
-        store.last_open = "";
-        store.last_closed = "";
+        store.last_open = '';
+        store.last_closed = '';
+        store.status = '';
         latest.push(store);
       }
     }
@@ -184,6 +185,7 @@ function update(store, status) {
 
   if (status == 'open') store.last_open = now;
   else if (status == 'closed') store.last_closed = now;
+  store.status = status;
 
   console.log(`${new Date().toISOString()} | ${status.toUpperCase()}: ${store.name}, ${store.state}, ${store.country}`);
   output();
