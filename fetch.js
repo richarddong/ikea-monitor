@@ -162,6 +162,7 @@ function load_stores_list(country) {
       if (!latest.find(s => s.id == store.id)) {
         store.last_open = "";
         store.last_closed = "";
+        store.last_open_historical = [];
         latest.push(store);
       }
     }
@@ -182,7 +183,16 @@ function output() {
 function update(store, status) {
   const now = new Date();
 
-  if (status == 'open') store.last_open = now;
+  if (status == 'open') {
+    store.last_open = now;
+
+    var maxDate = new Date(Math.max.apply(null, store.last_open_historical));
+    
+    if (((store.last_open_historical === undefined || store.last_open_historical.length == 0)) || ( store.last_closed > maxDate)){
+      store.last_open_historical.push (now);
+    }
+  } 
+  
   else if (status == 'closed') store.last_closed = now;
 
   console.log(`${new Date().toISOString()} | ${status.toUpperCase()}: ${store.name}, ${store.state}, ${store.country}`);
