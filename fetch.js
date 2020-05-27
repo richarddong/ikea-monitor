@@ -175,9 +175,7 @@ function load_stores_list(country) {
 }
 
 function output() {
-  fs.writeFile('./public/latest.json', JSON.stringify(latest, null, 2), (err) => {
-    if (err) throw err;
-  });
+  fs.writeFileSync('./public/latest.json', JSON.stringify(latest, null, 2));
 }
 
 function update(store, status) {
@@ -192,11 +190,11 @@ function update(store, status) {
 }
 
 fs.watch('./data/us-stores-list.json', (eventType, filename) => {
-  if (eventType == 'change') setTimeout(load_stores_list, 1000, 'us');
+  if (eventType == 'change') load_stores_list('us');
 });
 
 fs.watch('./data/ca-stores-list.json', (eventType, filename) => {
-  if (eventType == 'change') setTimeout(load_stores_list, 1000, 'ca');
+  if (eventType == 'change') load_stores_list('ca');
 });
 
 // ========================================

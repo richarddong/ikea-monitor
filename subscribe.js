@@ -83,7 +83,7 @@ function check_and_notify(){
 }
 
 fs.watch('./public/latest.json', (eventType, filename) => {
-  if (eventType == 'change') setTimeout(check_and_notify, 1000);
+  if (eventType == 'change') check_and_notify();
 });
 
 exports.subscribe = subscribe;
