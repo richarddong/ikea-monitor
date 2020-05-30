@@ -22,7 +22,7 @@ function post_data(store) {
 "locale":"en_CA",\
 "selectedServiceValue":"${store.id}",\
 "slId":"1241241241",\
-"articles":[{"articleNo":"30449908","count":1}]}`;
+"articles":[{"articleNo":"20011408","count":1}]}`;
       break;
   }
 

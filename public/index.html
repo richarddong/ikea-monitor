@@ -192,10 +192,10 @@
             window.alert('Please input your email address.');
             return;
           }
-          if (!document.getElementById("subscribe-email-address").validity.valid) {
-            window.alert('Please double check your email address.');
-            return;
-          }
+          // if (!document.getElementById("subscribe-email-address").validity.valid) {
+          //   window.alert('Please double check your email address.');
+          //   return;
+          // }
           $.post( "unsubscribe_all", { email: email },  function () {
             $('#unsubscribe-all-button').text('Unsubscribed');
             $('#unsubscribe-all-button').prop('disabled', true);
