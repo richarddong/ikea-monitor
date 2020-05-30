@@ -11,6 +11,7 @@ function send(email_addresses, store){
     html: `
 <p>Good News! <strong>IKEA ${store.name}</strong> is now open for Click & Collect orders. Act fast!</p>
 <p><a href="https://www.ikea.com" target="_blank">Direct link to IKEA Homepage</a></p>
+<p>To help yourself and other people receive email notification in the future, please kindly add the sender of this email to your contact and "report not spam" if this email is marked spam.</p>
 <p>If you like my service, please share it with your friend and <a href="https://www.buymeacoffee.com/dongst" target="_blank">buy me a coffee here</a>, or <a href="https://www.gofundme.com/f/ikea-click-amp-collect-availability-website?utm_source=customer&utm_medium=copy_link-tip&utm_campaign=p_cp+share-sheet" target="_blank">donate on gofundme</a>. Thank you. ;)</p>
 <p>dongst</p>
 <br>
