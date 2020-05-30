@@ -59,17 +59,11 @@
         <a target="_blank" href="https://cdn.forms-content.sg-form.com/309c87b8-9ee9-11ea-9bc4-1adbad87d676">Get updates</a> when text message notification, availability history, auto page refresh and other features are ready. <a target="_blank" href="https://www.reddit.com/r/IKEA/comments/gpl3x0/ikea_click_collect_status_website/">Feedback</a><hr><mark>May 27, 2020: <a href="#subscribe-container">Email Notification<sup>beta</sup></a>!</mark>
       </span>
     </nav>
-    <div class="container text-center mt-5 mb-2 p-5">
-      <h1 class="d-inline-block">IKEA Click & Collect Availability</h1>
-      <p class="mt-3">updated every minute.</p>
+    <div class="container text-center mt-5 px-4">
+      <h1 class="d-inline-block">IKEA Click & Collect<sup style="top: -0.7em;"><small><a tabindex="0" class="text-secondary" data-container="body"  data-placement="top" data-toggle="popover" data-trigger="focus" data-content="Click & Collect is the online order + curbside pick-up service provided by IKEA.">ⓘ</a></small></sup> Availability</h1>
+      <p class="mt-4">updated every minute.</p>
     </div>
-    <div class="container mb-5 pb-5">
-      <div class="sharethis-inline-share-buttons"></div>
-    </div>
-    <div class="container my-5 px-5 text-center">
-      <p class="small">Click & Collect is the online order + curbside pick-up service provided by IKEA. </p><p class="small">Latest updates to their services in the <a target="_blank" href="https://www.ikea.com/us/en/customer-service/faq/">U.S.</a> and <a target="_blank" href="https://www.ikea.com/ca/en/customer-service/services/updates-to-our-services-pub05de56e0">Canada</a> during Covid-19.</p>
-    </div>
-    <div class="container my-5 pb-3 pt-1 text-center legend">
+    <div class="container mt-5 mb-3 text-center legend">
       <span class="badge badge-light"><span class="status Open">●</span> Open for new order</span><br>
       <span class="badge badge-light"><span class="status Closed">●</span> Closed for new order</span><br>
       <span class="badge badge-light"><span class="status Unknown">●</span> Unknown</span>
@@ -79,14 +73,14 @@
       <h5 class="text-center pt-4 pb-3">United States</h5>
       <div class="row">
       </div>
-      <p class="small text-center mt-4">More locations in the United States will appear as soon as Click & Collect service becomes operative.</p>
+      <p class="small text-center mt-4">More locations in the United States will appear as soon as Click & Collect service becomes operative. <a target="_blank" href="https://www.ikea.com/us/en/customer-service/faq/">Official updates.</a></p>
     </div>
     <div class="container px-5 mt-5 ca-states">
       <hr>
       <h5 class="text-center pt-4 pb-3">Canada</h5>
       <div class="row">
       </div>
-      <p class="small text-center mt-4">More locations in Canada will appear as soon as Click & Collect service becomes operative.</p>
+      <p class="small text-center mt-4">More locations in Canada will appear as soon as Click & Collect service becomes operative. <a target="_blank" href="https://www.ikea.com/ca/en/customer-service/services/updates-to-our-services-pub05de56e0">Official updates.</a></p>
     </div>
     <div class="container px-5 mt-5 subscribe" id="subscribe-container">
       <hr>
@@ -114,6 +108,9 @@
       <div class="row pt-2 justify-content-center">
         <button type="button" class="btn btn-link" id="unsubscribe-all-button">Unsubscribe all</button>
       </div>
+    </div>
+    <div class="container my-4" id="sharethis">
+      <div class="sharethis-inline-share-buttons"></div>
     </div>
     <div class="container mt-3 story" id="story">
       <div class="row justify-content-center ">
@@ -210,6 +207,9 @@
                 $('#subscribe-button').click();
             }
         });
+      });
+      $('[data-toggle="popover"]').popover({
+        trigger: 'focus'
       });
     </script>
   </body>
