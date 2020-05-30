@@ -4,13 +4,21 @@ var bodyParser = require('body-parser');
 var serveStatic = require('serve-static');
 var finalhandler = require('finalhandler');
 var subscribe = require('./subscribe.js');
+var email = require('./email.js');
 
 var app = connect();
 
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.use('/subscribe', function (req, res) {
-  subscribe.subscribe(req.body.email, req.body['store_names[]']);
+  let store_names;
+  if (typeof req.body['store_names[]'] == 'string') {
+    store_names = [req.body['store_names[]']];
+  } else {
+    store_names = req.body['store_names[]'];
+  }
+  subscribe.subscribe(req.body.email, store_names);
+  email.confirm(req.body.email, store_names);
   res.end();
 });
 

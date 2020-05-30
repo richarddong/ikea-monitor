@@ -99,7 +99,7 @@ exports.unsubscribe_all = unsubscribe_all;
 
 // subscribe('test@dong.st', []);
 
-// subscribe('test@dong.st', ['Covina', 'Calgary']);
+// subscribe('test1@dong.st', ['Covina', 'Calgary']);
 
 // setTimeout(() => {
 //   unsubscribe_all('test@dong.st');
