@@ -1,9 +1,12 @@
 'use strict';
 
+const { promisify } = require('util');
+const sleep = promisify(setTimeout);
+
 const https = require('https');
 const caProvince = require('../data/ca-province.json');
 
-/* async */ function getIkeaRaw(country) {
+async function getIkeaRaw(country) {
   return new Promise((resolve, reject) => {
     https.get(`https://ww8.ikea.com/clickandcollect/${country}` +
               '/receive/listfetchlocations?version=2', (res) => {
@@ -48,7 +51,7 @@ function ikeaRaw2Locations(ikeaRaw, country) {
       for (const id in ikeaRaw) {
         const rawLocation = ikeaRaw[id];
         const location = {};
-        location.country = "us";
+        location.country = 'us';
         location.state = rawLocation.name.slice(0, 2);
         location.name = rawLocation.name.slice(4).startsWith('IKEA ')
                       ? rawLocation.name.slice(9)
@@ -67,7 +70,7 @@ function ikeaRaw2Locations(ikeaRaw, country) {
                        .slice(5, rawLocation.name.indexOf(' - '));
         const state = caProvince[name];
         const location = {};
-        location.country = "ca";
+        location.country = 'ca';
         location.state = state;
         location.name = name;
         location.isClosed = rawLocation.isClosed;
@@ -90,7 +93,7 @@ async function get(country) {
 
 async function upsert(db, location) {
   const result = await db
-                        .collection("locations")
+                        .collection('locations')
                         .updateOne({
                             country: location.country,
                             state: location.state,
@@ -127,7 +130,28 @@ async function refresh(db, country) {
   return upsertAll(db, locations);
 }
 
-exports.refresh = refresh;
+async function watch(db) {
+  while (true) {
+    try {
+      await refresh(db, 'us');
+      console.log('U.S. updated');
+    } catch (error) {
+      console.error(error.message);
+      console.log(`Try U.S. later`);
+    }
+    await sleep(10000);
+    try {
+      await refresh(db, 'ca');
+      console.log('Canada updated');
+    } catch (error) {
+      console.error(error.message);
+      console.log(`Try Canada later`);
+    }
+    await sleep(10000);
+  }
+}
+
+exports.watch = watch;
 
 // // Debugging Code
 
@@ -142,7 +166,7 @@ exports.refresh = refresh;
 
 //   try {
 //     await dbClient.connect();
-//     const db = dbClient.db("test");
+//     const db = dbClient.db('test');
 //     await refresh(db, 'us');
 //     await refresh(db, 'ca');
 //     console.debug('All updated');

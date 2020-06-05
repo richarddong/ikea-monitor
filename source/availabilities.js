@@ -1,5 +1,8 @@
 'use strict';
 
+const { promisify } = require('util');
+const sleep = promisify(setTimeout);
+
 const crypto = require('crypto');
 const https = require('https');
 const util = require('util');
@@ -29,10 +32,10 @@ function webForm(location) {
                      .update(payload)
                      .digest('hex');
 
-  return "payload=" + payload + "&hmac=" + hash;
+  return 'payload=' + payload + '&hmac=' + hash;
 }
 
-function getIkeaRaw(location) {
+async function getIkeaRaw(location) {
   return new Promise(function (resolve, reject) {
     const req = https.request(
       `https://ww8.ikea.com/clickandcollect/${location.country}/receive/`, {
@@ -80,8 +83,8 @@ function getIkeaRaw(location) {
 
 function ikeaRaw2Status (ikeaRaw) {
   const legitClosed1 =  {
-    status: "ERROR",
-    message: "The commission capacity of this store is exhausted for today",
+    status: 'ERROR',
+    message: 'The commission capacity of this store is exhausted for today',
     code: 1470143968
   };
   const legitClosed2 =  {
@@ -90,9 +93,9 @@ function ikeaRaw2Status (ikeaRaw) {
     code: 1410693100
   };
   const legitClosed3 =  {
-    status: "ERROR",
-    message: "Tried 100 without success. Probably you have no handover or \
-collection capacity set. Store in Charge: ",
+    status: 'ERROR',
+    message: 'Tried 100 without success. Probably you have no handover or \
+collection capacity set. Store in Charge: ',
     code: 0
   };
   const legitClosed4 =  {
@@ -100,13 +103,14 @@ collection capacity set. Store in Charge: ",
     message: 'No common capacity in configured time window',
     code: 1472475118
   };
-  if (util.isDeepStrictEqual(ikeaRaw, legitClosed1)) return "closed";
-  if (util.isDeepStrictEqual(ikeaRaw, legitClosed2)) return "closed";
+  if (util.isDeepStrictEqual(ikeaRaw, legitClosed1)) return 'closed';
+  if (util.isDeepStrictEqual(ikeaRaw, legitClosed2)) return 'closed';
   if (ikeaRaw.status == legitClosed3.status
       && ikeaRaw.message.startsWith(legitClosed3.message)
-      && ikeaRaw.code == legitClosed3.code) return "closed";
-  if (util.isDeepStrictEqual(ikeaRaw, legitClosed4)) return "closed";
-  if (ikeaRaw.status == "OK") return "open";
+      && ikeaRaw.code == legitClosed3.code) return 'closed';
+  if (util.isDeepStrictEqual(ikeaRaw, legitClosed4)) return 'closed';
+  if (ikeaRaw.status == 'OK') return 'open';
+  console.warn(ikeaRaw);
   throw new Error('Unhandled form of raw JSON of availability from IKEA.');
 }
 
@@ -123,7 +127,7 @@ async function update(db, location) {
   else if (status == 'closed') location.lastClosed = now;
   location.lastStatus = status;
   const result = await db
-                        .collection("locations")
+                        .collection('locations')
                         .updateOne({
                             country: location.country,
                             state: location.state,
@@ -141,7 +145,25 @@ async function update(db, location) {
   return result;
 }
 
-exports.update = update;
+async function watch(db) {
+  while (true) {
+    const allLocations = db.collection('locations')
+                           .find({})
+                           .sort({lastUpdated: 1});
+    for await(const location of allLocations) {
+      console.log(location.name);
+      try {
+        await update(db, location);
+      } catch (error) {
+        console.error(error.message);
+        console.log(`Try ${location.name} later`);
+      }
+      await sleep(1000);
+    }
+  }
+}
+
+exports.watch = watch;
 
 // // Debugging Code
 
@@ -157,8 +179,8 @@ exports.update = update;
 
 //   try {
 //     await dbClient.connect();
-//     const db = dbClient.db("test");
-//     const cm = await db.collection("locations")
+//     const db = dbClient.db('test');
+//     const cm = await db.collection('locations')
 //         .findOne({
 //             name: 'Burbank',
 //             state: 'CA'
