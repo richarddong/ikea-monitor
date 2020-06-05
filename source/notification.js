@@ -64,7 +64,8 @@ async function watch(db) {
       }
     }
   ];
-  const stream = db.collection('locations').watch(pipeline, {fullDocument: 'updateLookup'});
+  const stream = db.collection('locations')
+                   .watch(pipeline, {fullDocument: 'updateLookup'});
   stream.on('change', (locationChangeStreamRes) => {
     notify(db, locationChangeStreamRes.fullDocument);
     console.log(locationChangeStreamRes);
