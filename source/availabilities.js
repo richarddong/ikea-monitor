@@ -121,7 +121,7 @@ async function update(db, location) {
   location.lastUpdated = now;
   if (status == 'open') location.lastOpen = now;
   else if (status == 'closed') location.lastClosed = now;
-  location.status = status;
+  location.lastStatus = status;
   const result = await db
                         .collection("locations")
                         .updateOne({

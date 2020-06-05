@@ -14,14 +14,15 @@ async function refreshCountries(db) {
       await locations.refresh(db, 'us');
       console.log('U.S. updated');
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
       console.log(`Try U.S. later`);
     }
+    await sleep(10000);
     try {
       await locations.refresh(db, 'ca');
       console.log('Canada updated');
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
       console.log(`Try Canada later`);
     }
     await sleep(10000);
@@ -38,7 +39,7 @@ async function refreshLocations(db) {
       try {
         await availabilities.update(db, location);
       } catch (error) {
-        console.error(error);
+        console.error(error.message);
         console.log(`Try ${location.name} later`);
       }
       await sleep(1000);

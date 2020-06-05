@@ -153,10 +153,8 @@
     <script type="text/javascript">
       $.get("latest.json", function (latest) {
         for (const store of latest) {
-          let status;
-          if (store.last_open && store.last_open > store.last_closed) status = "Open";
-          else if (store.last_closed) status = "Closed";
-          else status = "Unknown";
+          const status = store.lastStatus ? store.lastStatus.charAt(0).toUpperCase() + store.lastStatus.slice(1) : 'Unknown';
+          console.log(status);
           if ($(`div.${store.state}`).length == 0) $(`div.${store.country}-states div.row`).append(`<div class="${store.state} col-12 col-sm-12 col-md-4 col-lg-4 col-xl-3 my-2 text-center"><p><h6>${store.state}</h6><ul class="list-unstyled"></ul></div>`);
           $(`div.${store.state} ul`).append(`<li><input type="checkbox" class="form-check-input subscribe-checkbox" id="${store.name}"><label class="form-check-label location-name" for="${store.name}">${store.name}&nbsp;&nbsp;<span class="status ${status}">●</span></label></li>`);
         }
@@ -181,7 +179,7 @@
             window.alert('Please double check your email address.');
             return;
           }
-          $.post( "subscribe", { email: email, store_names: locations },  function () {
+          $.post( "subscribe", { email: email, storeNames: locations },  function () {
             $('#subscribe-button').text('Subscribed');
             $('#subscribe-button').prop('disabled', true);
             $("#subscribe-to-be").addClass('d-none');
