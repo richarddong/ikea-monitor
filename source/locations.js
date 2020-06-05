@@ -4,10 +4,7 @@ const https = require('https');
 const caProvince = require('../data/ca-province.json');
 
 /* async */ function getIkeaRaw(country) {
-  if (country != 'us' && country != 'ca') {
-    throw new Error(`Country expected 'us' or 'ca', got '${country}'`);
-  }
-  return new Promise(function(fulfill, reject) {
+  return new Promise((resolve, reject) => {
     https.get(`https://ww8.ikea.com/clickandcollect/${country}` +
               '/receive/listfetchlocations?version=2', (res) => {
       const { statusCode } = res;
@@ -35,7 +32,7 @@ const caProvince = require('../data/ca-province.json');
       res.on('end', () => {
         try {
           const parsedData = JSON.parse(rawData);
-          fulfill(parsedData);
+          resolve(parsedData);
         } catch (e) {
           reject(e);
         }
@@ -79,8 +76,6 @@ function ikeaRaw2Locations(ikeaRaw, country) {
         locations.push(location);
       }
       break;
-    default:
-      throw new Error(`Country expected 'us' or 'ca', got '${country}'`);
   }
   // locations.sort((a, b) => { if (a.name < b.name) return -1; });
   // locations.sort((a, b) => { if (a.state < b.state) return -1; });
@@ -109,9 +104,9 @@ async function upsert(db, location) {
   // console.debug(location);
   // console.debug(`${result.matchedCount} document(s) matched the query criteria.`);
   // if (result.upsertedCount > 0) {
-  //     console.debug(`One document was inserted with the id ${result.upsertedId._id}`);
+  //   console.debug(`One document was inserted with the id ${result.upsertedId._id}`);
   // } else {
-  //     console.debug(`${result.modifiedCount} document(s) was/were updated.`);
+  //   console.debug(`${result.modifiedCount} document(s) was/were updated.`);
   // }
   return result;
 }
@@ -125,27 +120,34 @@ async function upsertAll(db, locations) {
 }
 
 async function refresh(db, country) {
+  if (country != 'us' && country != 'ca') {
+    throw new Error(`Country expected 'us' or 'ca', got '${country}'`);
+  }
   const locations = await get(country);
   return upsertAll(db, locations);
 }
 
 exports.refresh = refresh;
 
-// Debugging Code
+// // Debugging Code
 
 // const { MongoClient } = require('mongodb');
 
 // async function main() {
 //   const uri = 'mongodb+srv://test:HfQFZbFKhxxJxobh'
 //             + '@cluster0-mkbdv.mongodb.net/test'
-//             + '?retryWrites=true&w=majority&ssl=true';
+//             + '?retryWrites=true&w=majority&ssl=true'
+//             + '&useUnifiedTopology=true';
 //   const dbClient = new MongoClient(uri);
 
 //   try {
 //     await dbClient.connect();
 //     const db = dbClient.db("test");
-//     const dbResult = await refresh(db, 'us');
+//     await refresh(db, 'us');
+//     await refresh(db, 'ca');
 //     console.debug('All updated');
+//   } catch (error) {
+//     console.error(error);
 //   } finally {
 //     await dbClient.close();
 //   }
