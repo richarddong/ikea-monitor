@@ -86,7 +86,7 @@ exports.watch = watch;
 
 //   try {
 //     await dbClient.connect();
-//     const db = dbClient.db('test');
+//     const db = dbClient.db('ikeaMonitor');
 
 //     // await subscribe(db, 'test@dong.st', ['Burbank', 'Costa Mesa']);
 //     // await subscribe(db, 'test2@dong.st', ['Burbank', 'Carson']);

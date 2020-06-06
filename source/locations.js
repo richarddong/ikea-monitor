@@ -173,7 +173,7 @@ exports.watch = watch;
 
 //   try {
 //     await dbClient.connect();
-//     const db = dbClient.db('test');
+//     const db = dbClient.db('ikeaMonitor');
 //     await refresh(db, 'us');
 //     await refresh(db, 'ca');
 //     console.debug('All updated');

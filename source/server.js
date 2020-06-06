@@ -15,7 +15,7 @@ async function main() {
 
   try {
     await dbClient.connect();
-    const db = dbClient.db('test');
+    const db = dbClient.db('ikeaMonitor');
     const app = connect();
 
     app.use('/latest.json', function (req, res) {

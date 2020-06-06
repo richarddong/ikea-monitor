@@ -186,7 +186,7 @@ exports.watch = watch;
 
 //   try {
 //     await dbClient.connect();
-//     const db = dbClient.db('test');
+//     const db = dbClient.db('ikeaMonitor');
 //     const cm = await db.collection('locations')
 //         .findOne({
 //             name: 'Burbank',

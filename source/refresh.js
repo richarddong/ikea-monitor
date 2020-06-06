@@ -15,7 +15,7 @@ async function main() {
 
   try {
     await dbClient.connect();
-    const db = dbClient.db('test');
+    const db = dbClient.db('ikeaMonitor');
 
     await Promise.all([
       locations.watch(db),
