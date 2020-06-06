@@ -5,6 +5,7 @@ const { chunk } = require('lodash/array');
 const email = require('./email.js');
 
 async function subscribe(db, emailAddress, locationNames) {
+  console.log('Subscribe: ', emailAddress, locationNames);
   const updates = locationNames.map(locationName => {
     return  db.collection('locations')
               .updateOne(
@@ -21,6 +22,7 @@ async function subscribe(db, emailAddress, locationNames) {
 }
 
 async function unsubscribeAll(db, emailAddress) {
+  console.log('Unsubscribe All: ', emailAddress);
   return db.collection('locations')
            .updateMany(
             {},
