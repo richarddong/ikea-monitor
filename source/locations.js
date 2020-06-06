@@ -8,8 +8,14 @@ const caProvince = require('../data/ca-province.json');
 
 async function getIkeaRaw(country) {
   return new Promise((resolve, reject) => {
-    https.get(`https://ww8.ikea.com/clickandcollect/${country}` +
-              '/receive/listfetchlocations?version=2', (res) => {
+    const req = https.get({
+      host: process.env.IKEA_HOST,
+      port: 443,
+      path: `https://ww8.ikea.com/clickandcollect/${country}`
+            + '/receive/listfetchlocations?version=2',
+      headers: { 'Host': 'ww8.ikea.com' },
+      timeout: 5000,
+    }, (res) => {
       const { statusCode } = res;
       const contentType = res.headers['content-type'];
 
@@ -40,7 +46,11 @@ async function getIkeaRaw(country) {
           reject(e);
         }
       });
-    }).on('error', reject);
+    }).on('error', reject)
+      .on('timeout', () => {
+        req.abort();
+        reject(new Error('HTTP request timeout'));
+      });
   });
 }
 

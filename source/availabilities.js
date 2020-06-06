@@ -37,10 +37,17 @@ function webForm(location) {
 
 async function getIkeaRaw(location) {
   return new Promise(function (resolve, reject) {
-    const req = https.request(
-      `https://ww8.ikea.com/clickandcollect/${location.country}/receive/`, {
+    const req = https.request({
+        host: process.env.IKEA_HOST,
+        port: 443,
+        path: 'https://ww8.ikea.com/clickandcollect/'
+              + `${location.country}/receive/`,
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Host': 'ww8.ikea.com'
+        },
+        timeout: 5000,
       }, (res) => {
         const { statusCode } = res;
         // const statusCode = 500;
@@ -73,7 +80,11 @@ async function getIkeaRaw(location) {
             reject(error);
           }
         });
-    }).on('error', reject);
+    }).on('error', reject)
+      .on('timeout', () => {
+        req.abort();
+        reject(new Error('HTTP request timeout.'));
+      });
 
     req.write(webForm(location));
 
