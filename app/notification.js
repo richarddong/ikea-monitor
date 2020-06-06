@@ -1,5 +1,7 @@
 'use strict';
 
+const { chunk } = require('lodash/array');
+
 const email = require('./email.js');
 
 async function subscribe(db, emailAddress, locationNames) {
@@ -51,8 +53,10 @@ async function notify(db, location) {
   }, {
     $set: {lastNotified: new Date()}
   });
-  return email.send(location.subscribers,
-                    email.notificationMsg(location.name));
+  const subscribersChunks = chunk(location.subscribers, 900);
+  return Promise.allSettled(subscribersChunks.map(subscribersChunk => {
+    return email.send(subscribersChunk, email.notificationMsg(location.name));
+  }));
 }
 
 async function watch(db) {
