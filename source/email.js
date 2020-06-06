@@ -5,7 +5,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 function subscriptionConfirmationMsg(locationNames) {
   return {
-    from: 'IKEA Click & Collect Availability <notification.test@ikea-status.dong.st>',
+    from: 'IKEA Click & Collect Availability <notification@ikea-status.dong.st>',
     subject: `Subscription Confirmation`,
     html: `
 <p>Hi, there!</p>
@@ -25,7 +25,7 @@ function subscriptionConfirmationMsg(locationNames) {
 
 function notificationMsg(locationName) {
   return {
-    from: 'IKEA Click & Collect Availability <notification.test@ikea-status.dong.st>',
+    from: 'IKEA Click & Collect Availability <notification@ikea-status.dong.st>',
     subject: `IKEA ${locationName} Now Open for Click & Collect Orders`,
     html: `
 <p>Good News! <strong>IKEA ${locationName}</strong> is now open for Click & Collect orders. Act fast!</p>

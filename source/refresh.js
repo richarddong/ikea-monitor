@@ -17,15 +17,11 @@ async function main() {
     await dbClient.connect();
     const db = dbClient.db('ikeaMonitor');
 
-    await Promise.all([
-      locations.watch(db),
-      availabilities.watch(db),
-      notification.watch(db),
-    ]);
+    locations.watch(db);
+    availabilities.watch(db);
+    notification.watch(db);
   } catch (error) {
     console.error(error);
-  } finally {
-    await dbClient.close();
   }
 }
 

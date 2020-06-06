@@ -180,9 +180,10 @@
             window.alert('Please double check your email address.');
             return;
           }
+          $('#subscribe-button').text('Subscribing...');
+          $('#subscribe-button').prop('disabled', true);
           $.post( "subscribe", { email: email, storeNames: locations },  function () {
             $('#subscribe-button').text('Subscribed');
-            $('#subscribe-button').prop('disabled', true);
             $("#subscribe-to-be").addClass('d-none');
             $("#subscription-confirmation").removeClass('d-none');
             console.log('Successfully subscribed.');
@@ -198,9 +199,10 @@
           //   window.alert('Please double check your email address.');
           //   return;
           // }
+          $('#unsubscribe-all-button').text('Unsubscribing...');
+          $('#unsubscribe-all-button').prop('disabled', true);
           $.post( "unsubscribe_all", { email: email },  function () {
             $('#unsubscribe-all-button').text('Unsubscribed');
-            $('#unsubscribe-all-button').prop('disabled', true);
             console.log('Successfully unsubscribed all.');
           });
         });
