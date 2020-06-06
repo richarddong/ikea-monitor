@@ -10,10 +10,7 @@ const availabilities = require('./availabilities.js');
 const notification = require('./notification.js');
 
 async function main() {
-  const uri = 'mongodb+srv://test:HfQFZbFKhxxJxobh'
-            + '@cluster0-mkbdv.mongodb.net/test'
-            + '?retryWrites=true&w=majority'
-            + '&useUnifiedTopology=true';
+  const uri = process.env.MONGODB_URI;
   const dbClient = new MongoClient(uri);
 
   try {
