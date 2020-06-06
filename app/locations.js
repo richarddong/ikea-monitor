@@ -62,10 +62,9 @@ function ikeaRaw2Locations(ikeaRaw, country) {
         const rawLocation = ikeaRaw[id];
         const location = {};
         location.country = 'us';
-        location.state = rawLocation.name.slice(0, 2);
-        location.name = rawLocation.name.slice(4).startsWith('IKEA ')
-                      ? rawLocation.name.slice(9)
-                      : rawLocation.name.slice(4);
+        const indexOfIKEA = rawLocation.name.indexOf('IKEA ');
+        location.state = rawLocation.name.slice(indexOfIKEA - 4, indexOfIKEA - 2);
+        location.name = rawLocation.name.slice(indexOfIKEA + 5);
         location.isClosed = rawLocation.isClosed;
         location.closingTimes = rawLocation.closingTimes;
         location.id = id;
