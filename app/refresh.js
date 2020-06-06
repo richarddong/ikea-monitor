@@ -19,7 +19,7 @@ async function main() {
 
     locations.watch(db);
     availabilities.watch(db);
-    notification.watch(db);
+    // notification.watch(db);
   } catch (error) {
     console.error(error);
   }
