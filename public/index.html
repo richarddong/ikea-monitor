@@ -97,6 +97,9 @@
       <div class="row pt-1 pb-4 justify-content-center text-center" id="subscribe-to-be">
         <div class="col-8 col-sm-8 col-md-6 col-lg-4 col-xl-4">
           <p><small id="subscribe-count" class="form-text text-secondary">Check the boxes above to select locations before clicking "Subscribe".</small></p>
+          <p><small class="form-text text-danger">I am sorry. There is a problem that affects new subscribers after the system upgrade last night. Some of you may have received a subscription confirmation, but still can't receive any notification on IKEA location availabilities. </small></p>
+          <p><small class="form-text text-danger">Existing subscribers before the upgrade will continue to receive notification. The latest availabilities shown above on this page will be updated and not affected by the problem.</small></p>
+          <p><small class="form-text text-danger">I am trying my best for a recovery. <a href="https://cdn.forms-content.sg-form.com/4872fab1-a866-11ea-b2f7-3ed1c81e32ba">Click here</a> to get an alert when it's ready to accept new subscription.</small></p>
         </div>
       </div>
       <div class="row pt-1 pb-4 justify-content-center text-center d-none" id="subscription-confirmation">
@@ -106,7 +109,7 @@
         </div>
       </div>
       <div class="row pt-4 justify-content-center">
-        <button class="btn btn-primary" type="button" id="subscribe-button">Subscribe</button>
+        <button class="btn btn-primary disabled" type="button" id="subscribe-button">Subscribe Unavailable</button>
       </div>
       <div class="row pt-2 justify-content-center">
         <button type="button" class="btn btn-link" id="unsubscribe-all-button">Unsubscribe all</button>
@@ -166,12 +169,12 @@
             else $('#subscribe-count').text(`You are about to subscribe to email notification for IKEA ${locations.get().join(', ')}.`);
         });
         $('#subscribe-button').click(function() {
-          let email = $('#subscribe-email-address').val();
-          let locations = $('.subscribe-checkbox:checked').map(function () {return this.id}).get();
-          if (locations.length == 0) {
+          if ($('.subscribe-checkbox:checked').length == 0) {
             window.alert('Check the boxes above to select locations before clicking "Subscribe".');
             return;
           }
+          let locations = $('.subscribe-checkbox:checked').map(function () {return this.id}).get();
+          let email = $('#subscribe-email-address').val();
           if (email.length == 0) {
             window.alert('Please input your email address.');
             return;
