@@ -51,21 +51,21 @@ async function main() {
 
     app.use(bodyParser.urlencoded({extended: false}));
 
-    app.use('/subscribe', function (req, res) {
-      let storeNames;
-      if (typeof req.body['storeNames[]'] == 'string') {
-        storeNames = [req.body['storeNames[]']];
-      } else {
-        storeNames = req.body['storeNames[]'];
-      }
-      notification.subscribe(db, req.body.email, storeNames);
-      res.end();
-    });
+    // app.use('/subscribe', function (req, res) {
+    //   let storeNames;
+    //   if (typeof req.body['storeNames[]'] == 'string') {
+    //     storeNames = [req.body['storeNames[]']];
+    //   } else {
+    //     storeNames = req.body['storeNames[]'];
+    //   }
+    //   notification.subscribe(db, req.body.email, storeNames);
+    //   res.end();
+    // });
 
-    app.use('/unsubscribe_all', function (req, res) {
-      notification.unsubscribeAll(db, req.body.email);
-      res.end();
-    });
+    // app.use('/unsubscribe_all', function (req, res) {
+    //   notification.unsubscribeAll(db, req.body.email);
+    //   res.end();
+    // });
 
     const serve = serveStatic('../public', {
       'index': ['index.html', 'index.htm'],

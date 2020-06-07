@@ -1,33 +1,45 @@
 const { MongoClient } = require('mongodb');
 
+async function subscribeAll(db) {
+  console.log('Subscribe All: ', 'test@dong.st');
+  const result = await db.collection('locations')
+                          .updateMany(
+                            {},
+                            {
+                              $addToSet: {subscribers: 'test@dong.st'}
+                            }
+                          );
+  console.log(`${result.matchedCount} document(s) matched the query criteria.`);
+  console.log(`${result.modifiedCount} document(s) was/were updated.`);
+  return;
+}
+
+async function unsubscribeAll(db) {
+  console.log('Unsubscribe All: ', 'test@dong.st');
+  const result = await db.collection('locations')
+                          .updateMany(
+                            {},
+                            {
+                              $pull: {subscribers: 'test@dong.st'}
+                            }
+                          );
+  console.log(`${result.matchedCount} document(s) matched the query criteria.`);
+  console.log(`${result.modifiedCount} document(s) was/were updated.`);
+  return;
+}
+
 async function main() {
   const uri = process.env.MONGODB_URI;
   const dbClient = new MongoClient(uri);
 
   try {
     await dbClient.connect();
-    const db = dbClient.db('test');
+    const db = dbClient.db('ikeaMonitor');
 
-    const subscribers = require('../temp/subscribers.json');
 
-    const allUpdates = [];
+    await subscribeAll(db);
+    // await unsubscribeAll(db);
 
-    for (const email in subscribers) {
-      const locationNames = Array.isArray(subscribers[email]) ? subscribers[email] : [subscribers[email]];
-      for (const locationName of locationNames) {
-        allUpdates.push(db.collection('locations')
-                          .updateOne(
-                            {name: locationName},
-                            {
-                              $addToSet: {subscribers: email.trim()}
-                            }
-                          )
-        );
-      }
-    }
-
-    console.log(allUpdates.length);
-    await Promise.all(allUpdates);
 
   } catch (error) {
     console.error(error);
