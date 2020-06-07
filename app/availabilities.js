@@ -16,7 +16,9 @@ function webForm(location) {
 "locale":"en_US",\
 "selectedServiceValue":"${location.id}",\
 "slId":"1241241241",\
-"articles":[{"articleNo":"20011408","count":1}]}`;
+"articles":[{"articleNo":"20011408","count":1},\
+{"articleNo":"30449908","count":1},\
+{"articleNo":"40064702","count":1}]}`;
       break;
     case 'ca':
       payload = `{"selectedService":"fetchlocation",\
@@ -24,7 +26,9 @@ function webForm(location) {
 "locale":"en_CA",\
 "selectedServiceValue":"${location.id}",\
 "slId":"1241241241",\
-"articles":[{"articleNo":"20011408","count":1}]}`;
+"articles":[{"articleNo":"20011408","count":1},\
+{"articleNo":"30449908","count":1},\
+{"articleNo":"40064702","count":1}]}`;
       break;
   }
 
