@@ -168,30 +168,30 @@
             if (locations.length == 0) $('#subscribe-count').text('Check the boxes above to select locations before clicking "Subscribe".');
             else $('#subscribe-count').text(`You are about to subscribe to email notification for IKEA ${locations.get().join(', ')}.`);
         });
-        $('#subscribe-button').click(function() {
-          if ($('.subscribe-checkbox:checked').length == 0) {
-            window.alert('Check the boxes above to select locations before clicking "Subscribe".');
-            return;
-          }
-          let locations = $('.subscribe-checkbox:checked').map(function () {return this.id}).get();
-          let email = $('#subscribe-email-address').val();
-          if (email.length == 0) {
-            window.alert('Please input your email address.');
-            return;
-          }
-          if (!document.getElementById("subscribe-email-address").validity.valid || !$('#subscribe-email-address').val().match(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i)) {
-            window.alert('Please double check your email address.');
-            return;
-          }
-          $('#subscribe-button').text('Subscribing...');
-          $('#subscribe-button').prop('disabled', true);
-          $.post( "subscribe", { email: email, storeNames: locations },  function () {
-            $('#subscribe-button').text('Subscribed');
-            $("#subscribe-to-be").addClass('d-none');
-            $("#subscription-confirmation").removeClass('d-none');
-            console.log('Successfully subscribed.');
-          });
-        });
+        // $('#subscribe-button').click(function() {
+        //   if ($('.subscribe-checkbox:checked').length == 0) {
+        //     window.alert('Check the boxes above to select locations before clicking "Subscribe".');
+        //     return;
+        //   }
+        //   let locations = $('.subscribe-checkbox:checked').map(function () {return this.id}).get();
+        //   let email = $('#subscribe-email-address').val();
+        //   if (email.length == 0) {
+        //     window.alert('Please input your email address.');
+        //     return;
+        //   }
+        //   if (!document.getElementById("subscribe-email-address").validity.valid || !$('#subscribe-email-address').val().match(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i)) {
+        //     window.alert('Please double check your email address.');
+        //     return;
+        //   }
+        //   $('#subscribe-button').text('Subscribing...');
+        //   $('#subscribe-button').prop('disabled', true);
+        //   $.post( "subscribe", { email: email, storeNames: locations },  function () {
+        //     $('#subscribe-button').text('Subscribed');
+        //     $("#subscribe-to-be").addClass('d-none');
+        //     $("#subscription-confirmation").removeClass('d-none');
+        //     console.log('Successfully subscribed.');
+        //   });
+        // });
         $('#unsubscribe-all-button').click(function() {
           let email = $('#subscribe-email-address').val();
           if (email.length == 0) {
