@@ -1,13 +1,31 @@
 'use strict';
 
-const { MongoClient } = require('mongodb');
+const fs = require('fs');
 const http = require('http');
+
+const { promisify } = require('util');
+const sleep = promisify(setTimeout);
+
+const { MongoClient } = require('mongodb');
 const connect = require('connect');
 const bodyParser = require('body-parser');
 const serveStatic = require('serve-static');
 const finalhandler = require('finalhandler');
 
 const notification = require('./notification.js');
+
+async function downloadLatest(db) {
+  while (true) {
+    const latest = await db.collection('locations')
+                      .find({})
+                      .sort({country: 1, state: 1, name: 1})
+                      .project({subscribers: 0})
+                      .toArray();
+    fs.writeFileSync('../public/latest.json', JSON.stringify(latest, null, 2));
+    // console.log('latest.json updated.');
+    await sleep(5000);
+  }
+}
 
 async function main() {
   const uri = process.env.MONGODB_URI;
@@ -18,16 +36,18 @@ async function main() {
     const db = dbClient.db('ikeaMonitor');
     const app = connect();
 
-    app.use('/latest.json', function (req, res) {
-      res.setHeader('Content-Type', 'application/json; charset=UTF-8');
-      db.collection('locations')
-        .find({})
-        .sort({country: 1, state: 1, name: 1})
-        .project({subscribers: 0})
-        .toArray((error, latest) => {
-          res.end(JSON.stringify(latest, null, 2));
-        });
-    });
+    downloadLatest(db);
+
+    // app.use('/latest.json', function (req, res) {
+    //   res.setHeader('Content-Type', 'application/json; charset=UTF-8');
+    //   db.collection('locations')
+    //     .find({})
+    //     .sort({country: 1, state: 1, name: 1})
+    //     .project({subscribers: 0})
+    //     .toArray((error, latest) => {
+    //       res.end(JSON.stringify(latest, null, 2));
+    //     });
+    // });
 
     app.use(bodyParser.urlencoded({extended: false}));
 

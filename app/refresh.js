@@ -1,8 +1,5 @@
 'use strict';
 
-const { promisify } = require('util');
-const sleep = promisify(setTimeout);
-
 const { MongoClient } = require('mongodb');
 
 const locations = require('./locations.js');
